@@ -4,13 +4,20 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, Filter, Plus, Mail, Phone, 
-  MoreHorizontal, MapPin, User, Building 
+  MoreHorizontal, MapPin, User, Building, 
+  Edit
 } from "lucide-react";
-import { Partner } from "@/lib/odoo";
+// import UserFormModal from "./UserFormModal";
+import DeleteButton from "./DeleteButton";
+import ModalWrapper from "./ModalWrapper";
+import UserForm from "./UserFormModal";
+import { Partner } from "@/lib/types";
 
 export default function UserGrid({ initialData }: { initialData: Partner[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"ALL" | "TENANT" | "PROSPECT">("ALL");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<Partner | null>(null);
 
   // Logique de filtrage (Simulée pour l'instant si tu n'as pas de tags précis dans Odoo)
   // Dans un vrai cas, on filtrerait sur `partner.category_id` (Tags)
@@ -18,7 +25,7 @@ export default function UserGrid({ initialData }: { initialData: Partner[] }) {
     // 1. Filtre Recherche
     const matchesSearch = 
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
     // 2. Filtre Onglets (Simulation ici, à adapter selon tes Tags Odoo)
     // Disons qu'on affiche tout le monde pour l'instant, mais tu pourras filtrer par Tag ID
@@ -27,8 +34,18 @@ export default function UserGrid({ initialData }: { initialData: Partner[] }) {
     return matchesSearch && matchesTab;
   });
 
+  const handleCreate = () => {
+    setUserToEdit(null); // Mode création
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-8 w-full max-w-[1600px] mx-auto min-h-screen bg-slate-50/50">
+        {/* <UserFormModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        userToEdit={userToEdit}
+      /> */}
       
       {/* --- HEADER --- */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -50,7 +67,10 @@ export default function UserGrid({ initialData }: { initialData: Partner[] }) {
               className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-lg shadow-blue-600/20 transition-all">
+          <button 
+            onClick={handleCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-lg shadow-blue-600/20 transition-all"
+          >
             <Plus size={18} />
             <span>Ajouter</span>
           </button>
@@ -95,7 +115,9 @@ export default function UserGrid({ initialData }: { initialData: Partner[] }) {
 // --- SOUS-COMPOSANT : CARTE UTILISATEUR ---
 function UserCard({ user, index }: { user: Partner, index: number }) {
   // Détection basique pour savoir si c'est une entreprise (souvent pas de job mais un nom)
-  const isCompany = !user.job && user.image; 
+  const isCompany = !user.job && user.image_1920;
+  const [editUser, setEditUser] = useState<Partner | null>(null);
+    const [isModalOpen, setModalOpen] = useState(false);
 
   return (
     <motion.div
@@ -109,9 +131,9 @@ function UserCard({ user, index }: { user: Partner, index: number }) {
         {/* Avatar */}
         <div className="relative">
             <div className="w-14 h-14 rounded-full overflow-hidden bg-slate-100 border-2 border-white shadow-sm">
-                {user.image ? (
+                {user.image_1920 ? (
                     <img 
-                        src={`data:image/png;base64,${user.image}`} 
+                        src={`data:image/png;base64,${user.image_1920}`} 
                         alt={user.name} 
                         className="w-full h-full object-cover"
                     />
@@ -128,6 +150,16 @@ function UserCard({ user, index }: { user: Partner, index: number }) {
         <button className="text-slate-400 hover:text-blue-600 transition-colors">
             <MoreHorizontal size={20} />
         </button>
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <ModalWrapper 
+                isOpen={isModalOpen} 
+                onClose={() => setModalOpen(false)} 
+                title={editUser ? "Modifier Utilisateur" : "Nouveau Utilisateur"}
+                >
+                <UserForm user={editUser || undefined} onSuccess={() => setModalOpen(false)} />
+                </ModalWrapper>
+            <DeleteButton model="res.partner" id={user.id} path="/users" />
+        </div>
       </div>
 
       <div className="mb-4">
@@ -143,10 +175,10 @@ function UserCard({ user, index }: { user: Partner, index: number }) {
                 <span className="truncate">{user.email}</span>
             </div>
         )}
-        {(user.phone || user.mobile) && (
+        {(user.phone) && (
              <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-2 rounded-lg">
                 <Phone size={14} className="text-emerald-500 shrink-0" />
-                <span>{user.mobile || user.phone}</span>
+                <span>{user.phone}</span>
             </div>
         )}
       </div>
@@ -154,7 +186,7 @@ function UserCard({ user, index }: { user: Partner, index: number }) {
       {/* Actions Footer */}
       <div className="grid grid-cols-2 gap-3 border-t border-slate-100 pt-4">
         <a 
-            href={`tel:${user.mobile || user.phone}`}
+            href={`tel:${user.phone}`}
             className="flex items-center justify-center gap-2 py-2 text-xs font-semibold text-slate-600 bg-slate-50 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
         >
             <Phone size={14} /> Appeler

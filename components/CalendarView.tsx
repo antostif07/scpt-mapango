@@ -10,8 +10,8 @@ import {
 import { fr } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Plus, Clock, MapPin, Calendar as CalIcon } from "lucide-react";
-import { CalendarEvent } from "@/lib/odoo";
 import NewEventModal from "./NewEventModal"; // <--- 1. IMPORT ICI
+import { CalendarEvent } from "@/lib/types";
 
 export default function CalendarView({ events }: { events: CalendarEvent[] }) {
   const [currentDate, setCurrentDate] = useState(new Date());

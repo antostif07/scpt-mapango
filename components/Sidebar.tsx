@@ -37,8 +37,8 @@ const menuItems = [
   { name: "Demandes et Réclamations", icon: ClipboardList, href: "/tickets" },
   { name: "Gestion Financière", icon: Banknote, href: "/finance" },
   { name: "Gestion de Recouvrement", icon: Gavel, href: "/recovery" },
-  { name: "Analyse et Rapports", icon: BarChart3, href: "/reports" },
-  { name: "Annuaire", icon: Contact, href: "/directory" },
+  // { name: "Analyse et Rapports", icon: BarChart3, href: "/reports" },
+  // { name: "Annuaire", icon: Contact, href: "/directory" },
   { name: "Journaux d'audits", icon: BookText, href: "/audits" },
 ];
 

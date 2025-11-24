@@ -1,5 +1,5 @@
-import { getTickets } from "@/lib/odoo";
 import TicketBoard from "@/components/TicketBoard";
+import { fetchOdooData } from "@/lib/odoo";
 import { Ticket } from "@/lib/types";
 
 // Mock Data
@@ -12,7 +12,16 @@ const MOCK_TICKETS: Ticket[] = [
 export default async function TicketsPage() {
   let tickets: Ticket[] = [];
   try {
-     const data = await getTickets();
+     const data = await fetchOdooData("helpdesk.ticket", [
+      "id",
+      "name",
+      "partner_name",
+      "site_name",
+      "stage",
+      "priority",
+      "description",
+      "create_date"
+    ], [], 100);
      tickets = data.length > 0 ? data : MOCK_TICKETS;
   } catch(e) { tickets = MOCK_TICKETS; }
 

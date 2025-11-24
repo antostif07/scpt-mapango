@@ -1,4 +1,3 @@
-import { getSiteById } from "@/lib/odoo";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -7,12 +6,17 @@ import {
 } from "lucide-react";
 import MapWrapper from "@/components/MapWrapper"; // On réutilise notre carte !
 import SiteTabs from "./SitesTabs";
+import { fetchOdooRecord } from "@/lib/odoo";
+import { OdooSite } from "@/lib/types";
 
 // Composant Client pour les onglets (pour garder la page principale en Server Component)
 
 export default async function SiteDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const siteId = parseInt((await params).id);
-  const site = await getSiteById(siteId);
+  const site = await fetchOdooRecord("x_sites", siteId, ['x_name', 'x_studio_province_1', 'x_studio_ville', 'x_studio_superficie', 'x_studio_reference_1', 'x_avatar_image', 'x_studio_longitude_1', 'x_studio_latitude_1', 'x_studio_adresse']);
+
+  console.log(site);
+  
 
   if (!site) {
     return notFound(); // Affiche la page 404 de Next.js
@@ -20,7 +24,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
 
   // Conversion de l'image Base64 pour l'affichage
   const bgImage = (site as any).image 
-    ? `data:image/png;base64,${(site as any).image}`
+    ? `data:image/png;base64,${(site as OdooSite).x_avatar_image}`
     : "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2070"; // Image par défaut jolie
 
   return (
@@ -30,7 +34,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
       <div className="relative h-64 md:h-80 w-full bg-slate-900 group">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
-          <img src={bgImage} alt={site.name} className="w-full h-full object-cover opacity-60" />
+          <img src={bgImage} alt={site.x_name} className="w-full h-full object-cover opacity-60" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
         </div>
 
@@ -59,13 +63,13 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
                 <div className="flex items-center gap-2 mb-2">
                     <span className="px-2 py-1 bg-blue-600/90 rounded-md text-xs font-bold uppercase tracking-wide">Actif</span>
                     <span className="px-2 py-1 bg-white/20 rounded-md text-xs font-medium backdrop-blur-md border border-white/10">
-                        {site.ref || "Sans Référence"}
+                        {site.x_studio_reference_1 || "Sans Référence"}
                     </span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold mb-2">{site.name}</h1>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">{site.x_name}</h1>
                 <div className="flex items-center gap-4 text-white/70 text-sm">
-                    <span className="flex items-center gap-1"><MapPin size={16}/> {site.city}</span>
-                    <span className="flex items-center gap-1"><Ruler size={16}/> {site.surface} m²</span>
+                    <span className="flex items-center gap-1"><MapPin size={16}/> {site.x_studio_province_1 && site.x_studio_province_1[1]} - {site.x_studio_ville}</span>
+                    <span className="flex items-center gap-1"><Ruler size={16}/> {site.x_studio_superficie} m²</span>
                 </div>
             </div>
         </div>

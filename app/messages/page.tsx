@@ -1,5 +1,5 @@
-import { getChannels } from "@/lib/odoo";
 import ChatInterface from "@/components/ChatInterface";
+import { fetchOdooData } from "@/lib/odoo";
 import { Channel } from "@/lib/types";
 
 // Mock pour la démo si Odoo n'a pas de channels configurés
@@ -9,7 +9,7 @@ export default async function MessagesPage() {
   let channels: Channel[] = [];
 
   try {
-    const realChannels = await getChannels();
+    const realChannels = await fetchOdooData("mail.channel", ["id", "name", "description", "image", "last_message_date"]);
     channels = realChannels.length > 0 ? realChannels : MOCK_CHANNELS;
   } catch (e) {
     channels = MOCK_CHANNELS;

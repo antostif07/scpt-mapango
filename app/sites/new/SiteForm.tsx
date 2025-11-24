@@ -11,11 +11,11 @@ import {
 import { cn } from "@/lib/utils";
 import { createSiteAction } from "../actions";
 import { toast } from "sonner";
-import { Province } from "@/lib/odoo";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Province } from "@/lib/types";
 
 
 // -----------------
@@ -271,7 +271,7 @@ export default function NewSiteForm({ provinces }: { provinces: Province[] }) {
               >
                 <option value="">Sélectionner...</option>
                 {provinces.map((p) => (
-                  <option key={p.id} value={p.id.toString()}>{p.name}</option>
+                  <option key={p.id} value={p.id.toString()}>{p.x_name}</option>
                 ))}
               </select>
 

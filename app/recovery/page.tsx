@@ -1,5 +1,5 @@
-import { getRecoveryItems } from "@/lib/odoo";
 import RecoveryBoard from "@/components/RecoveryBoard";
+import { fetchOdooData } from "@/lib/odoo";
 import { RecoveryItem } from "@/lib/types";
 
 // Mock Data réaliste
@@ -13,7 +13,16 @@ const MOCK_RECOVERY: RecoveryItem[] = [
 export default async function RecoveryPage() {
   let items: RecoveryItem[] = [];
   try {
-     const data = await getRecoveryItems();
+     const data = await fetchOdooData("recovery.item", [
+      "id",
+      "invoice_ref",
+      "partner_name",
+      "partner_phone",
+      "due_date",
+      "amount_due",
+      "days_overdue",
+      "level"
+    ], [], 100);
      items = data.length > 0 ? data : MOCK_RECOVERY;
   } catch(e) { items = MOCK_RECOVERY; }
 

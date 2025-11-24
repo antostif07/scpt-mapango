@@ -1,5 +1,5 @@
-import { getAuditLogs } from "@/lib/odoo";
 import AuditLogViewer from "@/components/AuditLogViewer";
+import { fetchOdooData } from "@/lib/odoo";
 import { AuditLog } from "@/lib/types";
 
 const MOCK_LOGS: AuditLog[] = [
@@ -11,7 +11,7 @@ const MOCK_LOGS: AuditLog[] = [
 export default async function AuditsPage() {
   let logs: AuditLog[] = [];
   try {
-     const data = await getAuditLogs();
+     const data = await fetchOdooData("helpdesk.ticket", ["id", "date", "author", "model", "res_name", "body"], [], 50);
      logs = data.length > 0 ? data : MOCK_LOGS;
   } catch(e) { logs = MOCK_LOGS; }
 

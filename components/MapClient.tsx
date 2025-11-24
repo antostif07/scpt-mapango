@@ -6,8 +6,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Building2, MapPin, ArrowRight } from "lucide-react";
-import { Site } from "@/lib/odoo";
 import Link from "next/link";
+import { OdooSite } from "@/lib/types";
 
 // --- 1. Icône Custom (inchangée) ---
 const createCustomIcon = () => {
@@ -28,14 +28,14 @@ const createCustomIcon = () => {
 };
 
 // --- 2. NOUVEAU COMPOSANT : AUTO-ZOOM ---
-function FitBounds({ sites }: { sites: Site[] }) {
+function FitBounds({ sites }: { sites: OdooSite[] }) {
   const map = useMap();
 
   useEffect(() => {
     if (sites.length === 0) return;
 
     // On crée un tableau de coordonnées [lat, lng]
-    const markers = sites.map(s => [parseFloat(s.latitude!), parseFloat(s.longitude!)]);
+    const markers = sites.map(s => [parseFloat(s.x_studio_latitude_1!), parseFloat(s.x_studio_longitude_1!)]);
 
     // On crée une "Bound" (limite) Leaflet qui englobe tous ces points
     const bounds = L.latLngBounds(markers as L.LatLngExpression[]);
@@ -50,16 +50,16 @@ function FitBounds({ sites }: { sites: Site[] }) {
   return null;
 }
 
-export default function MapClient({ sites }: { sites: Site[] }) {
+export default function MapClient({ sites }: { sites: OdooSite[] }) {
   // Centre par défaut (Repli si aucun site)
   const defaultCenter: [number, number] = [-4.325, 15.322]; 
-  const [selectedSite, setSelectedSite] = useState<Site | null>(null);
+  const [selectedSite, setSelectedSite] = useState<OdooSite | null>(null);
 
   // Filtrage des sites valides
   const validSites = sites.filter(s => 
-    s.latitude && s.longitude && 
-    !isNaN(parseFloat(s.latitude)) && 
-    !isNaN(parseFloat(s.longitude))
+    s.x_studio_latitude_1 && s.x_studio_longitude_1 && 
+    !isNaN(parseFloat(s.x_studio_latitude_1)) && 
+    !isNaN(parseFloat(s.x_studio_longitude_1))
   );
 
   return (
@@ -83,7 +83,7 @@ export default function MapClient({ sites }: { sites: Site[] }) {
         {validSites.map((site) => (
             <Marker 
                 key={site.id} 
-                position={[parseFloat(site.latitude!), parseFloat(site.longitude!)]} 
+                position={[parseFloat(site.x_studio_latitude_1!), parseFloat(site.x_studio_longitude_1!)]} 
                 icon={createCustomIcon()}
                 eventHandlers={{
                     click: () => setSelectedSite(site),
@@ -110,20 +110,20 @@ export default function MapClient({ sites }: { sites: Site[] }) {
                         <X size={18} />
                     </button>
                     <div className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-md text-xs font-bold text-slate-800 rounded-lg shadow-sm">
-                        {selectedSite.ref || "REF"}
+                        {selectedSite.x_studio_reference_1 || "REF"}
                     </div>
                 </div>
 
                 <div className="p-6 flex-1 overflow-y-auto">
-                    <h2 className="text-xl font-bold text-slate-900 leading-tight mb-1">{selectedSite.name}</h2>
+                    <h2 className="text-xl font-bold text-slate-900 leading-tight mb-1">{selectedSite.x_name}</h2>
                     <p className="text-sm text-slate-500 flex items-center gap-1 mb-6">
-                        <MapPin size={14} /> {selectedSite.city}
+                        <MapPin size={14} /> {selectedSite.x_studio_ville}
                     </p>
 
                     <div className="grid grid-cols-2 gap-4 mb-6">
                         <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
                             <p className="text-xs text-slate-500 uppercase font-semibold">Superficie</p>
-                            <p className="text-lg font-bold text-slate-800">{selectedSite.surface} <span className="text-xs font-normal text-slate-500">m²</span></p>
+                            <p className="text-lg font-bold text-slate-800">{selectedSite.x_studio_superficie} <span className="text-xs font-normal text-slate-500">m²</span></p>
                         </div>
                         <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
                             <p className="text-xs text-blue-600 uppercase font-semibold">État</p>

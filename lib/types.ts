@@ -21,7 +21,7 @@ export interface Company {
   phone: string;
   website: string;
   vat: string; // Numéro NIF/TVA
-  image: string;
+  image_1920: string;
   is_supplier: boolean; // rank > 0
   is_customer: boolean; // rank > 0
   tags: string[];
@@ -82,4 +82,67 @@ export interface AuditLog {
   model: string;  // Sur quoi (ex: res.partner)
   res_name: string; // Nom de l'objet (ex: Jean Kabuya)
   body: string;   // Quoi (ex: <p>Prix modifié de 500 à 600</p>)
+}
+
+export interface Partner {
+    id: number;
+    name: string;
+    email?: string;
+    phone?: string;
+    job?: string;
+    image_1920?: string|boolean;
+}
+
+export interface OdooSite {
+  id: number;
+  x_name: string;
+  x_studio_reference_1: string;
+  x_studio_ville: string;
+  x_studio_province: any; 
+  x_studio_superficie: number;
+  x_studio_latitude_1: string;
+  x_studio_longitude_1: string;
+  x_avatar_image: string | null;
+}
+
+export interface Site {
+  id: number;
+  name: string;
+  ref: string;
+  city: string;
+  province: string;
+  province_id: number | null;
+  surface: number;
+  latitude: string;
+  longitude: string;
+  image: string | null;
+}
+
+export interface OdooSite {
+  id: number;
+  x_name: string;
+  x_avatar_image: string | null;
+  x_studio_superficie: number;
+  x_studio_ville: string;
+  x_studio_reference_1: string;
+  total_revenue: number;
+  x_studio_province_1?: [number, string];
+}
+
+export interface CalendarEvent {
+  id: number;
+  name: string;
+  start: string; // ISO String
+  end: string;   // ISO String
+  allDay: boolean;
+  description?: string;
+  location?: string;
+  tags: string[];
+  color_id?: number;
+  duration: number; // Durée en heures
+}
+
+export interface Province {
+  id: number;
+  x_name: string;
 }

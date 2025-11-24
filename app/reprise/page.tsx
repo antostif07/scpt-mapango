@@ -1,5 +1,5 @@
-import { getInventories } from "@/lib/odoo";
 import InventoryList from "@/components/InventoryList";
+import { fetchOdooData } from "@/lib/odoo";
 import { Inventory } from "@/lib/types";
 
 const MOCK_DATA: Inventory[] = [
@@ -12,7 +12,15 @@ export default async function ReprisePage() {
   let inventories: Inventory[] = [];
 
   try {
-    const data = await getInventories();
+    const data = await fetchOdooData("estate.inventory", [
+      "id",
+      "name",
+      "date",
+      "site_name",
+      "partner_name",
+      "type",
+      "state",
+    ], [], 50);
     inventories = data.length > 0 ? data : MOCK_DATA;
   } catch (e) {
     inventories = MOCK_DATA;

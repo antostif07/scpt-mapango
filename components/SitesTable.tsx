@@ -3,18 +3,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, MapPin, MoreVertical, Plus, Filter, Building2 } from "lucide-react";
-import { Site } from "@/lib/odoo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { OdooSite } from "@/lib/types";
 
-export default function SitesTable({ initialData }: { initialData: Site[] }) {
+export default function SitesTable({ initialData }: { initialData: OdooSite[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter(); 
 
   // Filtrage simple côté client pour la fluidité immédiate
   const filteredSites = initialData.filter(site => 
-    site.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    site.ref?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    site.x_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    site.x_studio_reference_1?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     false
   );
 
@@ -80,7 +80,7 @@ export default function SitesTable({ initialData }: { initialData: Site[] }) {
                   >
                     <td className="p-4 pl-6">
                       <div className="font-mono text-xs text-slate-400">#{site.id}</div>
-                      <div className="font-medium text-slate-700">{site.ref || "—"}</div>
+                      <div className="font-medium text-slate-700">{site.x_studio_reference_1 || "—"}</div>
                     </td>
                     
                     <td className="p-4">
@@ -89,23 +89,23 @@ export default function SitesTable({ initialData }: { initialData: Site[] }) {
                         <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-white group-hover:shadow-sm transition-all">
                           <Building2 size={20}/>
                         </div>
-                        <span className="font-semibold text-slate-800">{site.name}</span>
+                        <span className="font-semibold text-slate-800">{site.x_name}</span>
                       </div>
                     </td>
 
                     <td className="p-4">
                       <div className="flex flex-col">
-                        <span className="text-slate-700">{site.city || "N/A"}</span>
+                        <span className="text-slate-700">{site.x_studio_ville || "N/A"}</span>
                         <div className="flex items-center gap-1 text-xs text-slate-400">
                            <MapPin size={12}/>
                            {/* Odoo retourne souvent [id, "Nom"] pour les relations, on prend l'index 1 */}
-                           {Array.isArray(site.state_id) ? site.state_id[1] : "—"}
+                           {Array.isArray(site.x_studio_province_1) ? site.x_studio_province_1[1] : "—"}
                         </div>
                       </div>
                     </td>
 
                     <td className="p-4 text-right font-mono text-slate-600">
-                      {site.surface ? site.surface.toLocaleString() : "—"}
+                      {site.x_studio_superficie ? site.x_studio_superficie.toLocaleString() : "—"}
                     </td>
 
                     <td className="p-4 text-right">

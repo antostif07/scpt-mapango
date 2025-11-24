@@ -1,7 +1,7 @@
 "use client";
 
+import { OdooSite } from "@/lib/types";
 import dynamic from "next/dynamic";
-import { Site } from "@/lib/odoo";
 
 // On importe le MapClient ici avec ssr: false
 // Cela fonctionne car nous sommes dans un fichier "use client"
@@ -17,6 +17,6 @@ const MapClient = dynamic(() => import("./MapClient"), {
   ),
 });
 
-export default function MapWrapper({ sites }: { sites: Site[] }) {
+export default function MapWrapper({ sites }: { sites: OdooSite[] }) {
   return <MapClient sites={sites} />;
 }

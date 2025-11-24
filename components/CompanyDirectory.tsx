@@ -111,8 +111,8 @@ function CompanyCard({ company, index }: { company: Company, index: number }) {
         <div className="flex items-start justify-between mb-4">
             {/* Logo Wrapper */}
             <div className="w-16 h-16 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden p-2 group-hover:scale-105 transition-transform">
-                {company.image ? (
-                    <img src={`data:image/png;base64,${company.image}`} alt={company.name} className="w-full h-full object-contain" />
+                {company.image_1920 ? (
+                    <img src={`data:image/png;base64,${company.image_1920}`} alt={company.name} className="w-full h-full object-contain" />
                 ) : (
                     <span className="text-2xl font-bold text-slate-300">{initial}</span>
                 )}

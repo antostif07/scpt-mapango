@@ -1,5 +1,5 @@
-import { getInvoices } from "@/lib/odoo";
 import FinanceTable from "@/components/FinanceTable";
+import { fetchOdooData } from "@/lib/odoo";
 import { Invoice } from "@/lib/types";
 
 const MOCK_INVOICES: Invoice[] = [
@@ -11,7 +11,17 @@ const MOCK_INVOICES: Invoice[] = [
 export default async function FinancePage() {
   let invoices: Invoice[] = [];
   try {
-     const data = await getInvoices();
+     const data = await fetchOdooData("account.move", [
+      "id",
+      "name",
+      "partner_name",
+      "date",
+      "amount_total",
+      "state",
+      "payment_state"
+    ], [
+      ["move_type", "=", "out_invoice"]
+    ]);
      invoices = data.length > 0 ? data : MOCK_INVOICES;
   } catch(e) { invoices = MOCK_INVOICES; }
 
