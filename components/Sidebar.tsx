@@ -6,7 +6,13 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   LayoutDashboard, Building2, Map as MapIcon, Users, 
-  Briefcase, Calendar, MessageSquare, RefreshCw, ChevronDown, ChevronRight 
+  Briefcase, Calendar, MessageSquare, RefreshCw, ChevronDown, ChevronRight, 
+  ClipboardList,
+  Banknote,
+  BarChart3,
+  BookText,
+  Contact,
+  Gavel
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +34,12 @@ const menuItems = [
   { name: "Agenda", icon: Calendar, href: "/agenda" },
   { name: "Messagerie", icon: MessageSquare, href: "/messages" },
   { name: "Reprise immobilière", icon: RefreshCw, href: "/reprise" },
+  { name: "Demandes et Réclamations", icon: ClipboardList, href: "/tickets" },
+  { name: "Gestion Financière", icon: Banknote, href: "/finance" },
+  { name: "Gestion de Recouvrement", icon: Gavel, href: "/recovery" },
+  { name: "Analyse et Rapports", icon: BarChart3, href: "/reports" },
+  { name: "Annuaire", icon: Contact, href: "/directory" },
+  { name: "Journaux d'audits", icon: BookText, href: "/audits" },
 ];
 
 export default function Sidebar() {
